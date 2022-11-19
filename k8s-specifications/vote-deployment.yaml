@@ -14,6 +14,7 @@ spec:
     metadata:
       labels:
         app: vote
+        log: vote
     spec:
       containers:
       - image: example-voting-app_vote

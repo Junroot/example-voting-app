@@ -13,6 +13,7 @@ var express = require('express'),
 io.set('transports', ['polling']);
 
 var port = process.env.PORT || 4000;
+const periods = ['5m', '1h', '1d', '5000y'];
 
 io.sockets.on('connection', function (socket) {
 
@@ -47,16 +48,19 @@ async.retry(
 );
 
 function getVotes(client) {
-  client.query('SELECT vote, COUNT(id) AS count FROM votes GROUP BY vote', [], function(err, result) {
-    if (err) {
-      console.error("Error performing query: " + err);
-    } else {
-      var votes = collectVotesFromResult(result);
-      io.sockets.emit("scores", JSON.stringify(votes));
-    }
-
-    setTimeout(function() {getVotes(client) }, 1000);
-  });
+  for (const period of periods) {
+    client.query(`SELECT vote, COUNT(id) AS count FROM votes WHERE createdat >= now() - INTERVAL '${period}' GROUP BY vote`, [], function(err, result) {
+      if (err) {
+        console.error("Error performing query: " + err);
+      } else {
+        var votes = collectVotesFromResult(result);
+        votes.period = period;
+        io.sockets.emit("scores", JSON.stringify(votes));
+      }
+  
+      setTimeout(function() {getVotes(client) }, 1000);
+    });
+  }
 }
 
 function collectVotesFromResult(result) {
@@ -82,6 +86,10 @@ app.use(function(req, res, next) {
 app.use(express.static(__dirname + '/views'));
 
 app.get('/', function (req, res) {
+  res.sendFile(path.resolve(__dirname + '/views/index.html'));
+});
+
+app.get('/period', function (req, res) {
   res.sendFile(path.resolve(__dirname + '/views/index.html'));
 });
 

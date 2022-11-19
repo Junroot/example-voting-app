@@ -37,6 +37,7 @@ services:
   worker:
     build:
       context: ./worker
+      dockerfile: Dockerfile.j
     depends_on:
       redis:
         condition: service_healthy 

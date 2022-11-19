@@ -1,6 +1,15 @@
 var app = angular.module('catsvsdogs', []);
 var socket = io.connect({transports:['polling']});
 
+const params = new URLSearchParams(document.location.search);
+const keys = Array.from(params.keys());
+if (keys.length > 0) {
+  period = keys[0];
+} else {
+  period = '5000y';
+}
+console.log(period);
+  
 var bg1 = document.getElementById('background-stats-1');
 var bg2 = document.getElementById('background-stats-2');
 
@@ -11,19 +20,21 @@ app.controller('statsCtrl', function($scope){
   var updateScores = function(){
     socket.on('scores', function (json) {
        data = JSON.parse(json);
-       var a = parseInt(data.a || 0);
-       var b = parseInt(data.b || 0);
-
-       var percentages = getPercentages(a, b);
-
-       bg1.style.width = percentages.a + "%";
-       bg2.style.width = percentages.b + "%";
-
-       $scope.$apply(function () {
-         $scope.aPercent = percentages.a;
-         $scope.bPercent = percentages.b;
-         $scope.total = a + b;
-       });
+       if (data.period === period) {
+        var a = parseInt(data.a || 0);
+        var b = parseInt(data.b || 0);
+ 
+        var percentages = getPercentages(a, b);
+ 
+        bg1.style.width = percentages.a + "%";
+        bg2.style.width = percentages.b + "%";
+ 
+        $scope.$apply(function () {
+          $scope.aPercent = percentages.a;
+          $scope.bPercent = percentages.b;
+          $scope.total = a + b;
+        });
+       }
     });
   };
 

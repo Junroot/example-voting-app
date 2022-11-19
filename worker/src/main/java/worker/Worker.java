@@ -11,6 +11,7 @@ class Worker {
       Jedis redis = connectToRedis("redis");
       Connection dbConn = connectToDB("db");
 
+      System.err.println("Started worker for java");
       System.err.println("Watching vote queue");
 
       while (true) {
@@ -18,9 +19,10 @@ class Worker {
         JSONObject voteData = new JSONObject(voteJSON);
         String voterID = voteData.getString("voter_id");
         String vote = voteData.getString("vote");
+        Timestamp date = Timestamp.valueOf(voteData.getString("date"));
 
-        System.err.printf("Processing vote for '%s' by '%s'\n", vote, voterID);
-        updateVote(dbConn, voterID, vote);
+        System.err.printf("Processing vote for '%s' by '%s' at '%s'\n", vote, voterID, date);
+        updateVote(dbConn, voterID, vote, date);
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -28,19 +30,21 @@ class Worker {
     }
   }
 
-  static void updateVote(Connection dbConn, String voterID, String vote) throws SQLException {
+  static void updateVote(Connection dbConn, String voterID, String vote, Timestamp date) throws SQLException {
     PreparedStatement insert = dbConn.prepareStatement(
-      "INSERT INTO votes (id, vote) VALUES (?, ?)");
+      "INSERT INTO votes (id, vote, createdAt) VALUES (?, ?, ?)");
     insert.setString(1, voterID);
     insert.setString(2, vote);
+    insert.setTimestamp(3, date);
 
     try {
       insert.executeUpdate();
     } catch (SQLException e) {
       PreparedStatement update = dbConn.prepareStatement(
-        "UPDATE votes SET vote = ? WHERE id = ?");
+        "UPDATE votes SET vote = ?, createdAt = ? WHERE id = ?");
       update.setString(1, vote);
-      update.setString(2, voterID);
+      update.setTimestamp(2, date);
+      update.setString(3, voterID);
       update.executeUpdate();
     }
   }
@@ -80,7 +84,7 @@ class Worker {
       }
 
       PreparedStatement st = conn.prepareStatement(
-        "CREATE TABLE IF NOT EXISTS votes (id VARCHAR(255) NOT NULL UNIQUE, vote VARCHAR(255) NOT NULL)");
+        "CREATE TABLE IF NOT EXISTS votes (id VARCHAR(255) NOT NULL UNIQUE, vote VARCHAR(255) NOT NULL, createdAt TIMESTAMP NOT NULL)");
       st.executeUpdate();
 
     } catch (ClassNotFoundException e) {
