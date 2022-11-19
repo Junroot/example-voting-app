@@ -35,6 +35,14 @@ button.b{
   background-color: #00cbca;
 }
 
+button.c{
+  background-color: #2db400;
+}
+
+button.d {
+  background-color: #ffe812;
+}
+
 #tip{
   text-align: left;
   color: #c0c9ce;
@@ -42,8 +50,8 @@ button.b{
 }
 
 #hostname{
-  position: absolute;
-  bottom: 100px;
+  position: relative;
+  top: 0;
   right: 0;
   left: 0;
   color: #8f9ea8;
@@ -106,12 +114,28 @@ button.b{
   background-color: #00a2a1;
 }
 
+#choice button.c:hover{
+  background-color:#1ca300;
+}
+
+#choice button.d:hover{
+  background-color: #eed701;
+}
+
 #choice button.a:focus{
   background-color: #1488c6;
 }
 
 #choice button.b:focus{
   background-color: #00a2a1;
+}
+
+#choice button.c:focus{
+  background-color: #1da400;
+}
+
+#choice button.d:focus{
+  background-color: #eed701;
 }
 
 #background-stats{

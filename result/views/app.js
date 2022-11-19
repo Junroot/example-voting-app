@@ -12,10 +12,14 @@ console.log(period);
   
 var bg1 = document.getElementById('background-stats-1');
 var bg2 = document.getElementById('background-stats-2');
+var bg3 = document.getElementById('background-stats-3');
+var bg4 = document.getElementById('background-stats-4');
 
 app.controller('statsCtrl', function($scope){
-  $scope.aPercent = 50;
-  $scope.bPercent = 50;
+  $scope.aPercent = 25;
+  $scope.bPercent = 25;
+  $scope.cPercent = 25;
+  $scope.dPercent = 25;
 
   var updateScores = function(){
     socket.on('scores', function (json) {
@@ -23,16 +27,22 @@ app.controller('statsCtrl', function($scope){
        if (data.period === period) {
         var a = parseInt(data.a || 0);
         var b = parseInt(data.b || 0);
+        var c = parseInt(data.c || 0);
+        var d = parseInt(data.d || 0);
  
-        var percentages = getPercentages(a, b);
+        var percentages = getPercentages(a, b, c, d);
  
         bg1.style.width = percentages.a + "%";
         bg2.style.width = percentages.b + "%";
+        bg3.style.width = percentages.c + "%";
+        bg4.style.width = percentages.d + "%";
  
         $scope.$apply(function () {
           $scope.aPercent = percentages.a;
           $scope.bPercent = percentages.b;
-          $scope.total = a + b;
+          $scope.cPercent = percentages.c;
+          $scope.dPercent = percentages.d;
+          $scope.total = a + b + c + d;
         });
        }
     });
@@ -47,14 +57,17 @@ app.controller('statsCtrl', function($scope){
   });
 });
 
-function getPercentages(a, b) {
+function getPercentages(a, b, c, d) {
   var result = {};
+  const sum = a + b + c + d;
 
-  if (a + b > 0) {
-    result.a = Math.round(a / (a + b) * 100);
-    result.b = 100 - result.a;
+  if (sum > 0) {
+    result.a = Math.round(a / sum * 100);
+    result.b = Math.round(b / sum * 100);
+    result.c = Math.round(c / sum * 100);
+    result.d = 100 - result.a - result.b - result.c;
   } else {
-    result.a = result.b = 50;
+    result.a = result.b = result.c = result.d = 25;
   }
 
   return result;

@@ -11,10 +11,7 @@
   </head>
   <body ng-controller="statsCtrl" >
      <div id="background-stats">
-       <div id="background-stats-1">
-       </div><!--
-      --><div id="background-stats-2">
-      </div>
+      <div id="background-stats-1"></div><div id="background-stats-2"></div><div id="background-stats-3"></div><div id="background-stats-4"></div>
     </div>
     <div id="content-container">
       <div id="content-container-center">
@@ -23,10 +20,17 @@
             <div class="label">Cats</div>
             <div class="stat">{{aPercent | number:1}}%</div>
           </div>
-          <div class="divider"></div>
           <div class="choice dogs">
             <div class="label">Dogs</div>
             <div class="stat">{{bPercent | number:1}}%</div>
+          </div>
+          <div class="choice both">
+            <div class="label">Both</div>
+            <div class="stat">{{cPercent | number:1}}%</div>
+          </div>
+          <div class="choice none">
+            <div class="label">None</div>
+            <div class="stat">{{dPercent | number:1}}%</div>
           </div>
         </div>
       </div>

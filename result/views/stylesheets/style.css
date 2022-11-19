@@ -32,6 +32,14 @@ body{
   background-color: #00cbca;
 }
 
+#background-stats-3{
+  background-color: #2db400;
+}
+
+#background-stats-4{
+  background-color: #ffe812;
+}
+
 #content-container{
   z-index:2;
   position:relative;
@@ -64,8 +72,13 @@ body{
   vertical-align:middle;
   font-size:40px;
   font-weight: 600;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-row: auto auto;
+  grid-column-gap: 20px;
+  grid-row-gap: 20px;
   width: 450px;
-  height: 200px;
+  height: 400px;
 }
 #choice a{
   text-decoration:none;
@@ -76,27 +89,43 @@ body{
 }
 
 #choice .choice{
-  width: 49%;
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-  text-align: left;
-  padding-left: 50px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
 }
 
 #choice .choice .label{
+  display: flex;
   text-transform: uppercase;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
 }
+
+#choice .choice .stat{
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
 
 #choice .choice.dogs{
   color: #00cbca;
-  float: right;
 }
 
 #choice .choice.cats{
   color: #2196f3;
-  float: left;
 }
+
+#choice .choice.both{
+  color: #2db400;
+}
+
+#choice .choice.none{
+  color: #ffe812;
+}
+
 #background-stats{
   z-index:1;
   height:100%;
